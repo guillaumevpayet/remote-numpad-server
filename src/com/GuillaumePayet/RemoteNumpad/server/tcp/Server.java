@@ -1,8 +1,9 @@
 package com.GuillaumePayet.RemoteNumpad.server.tcp;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -19,6 +20,7 @@ public class Server extends Thread implements IServer {
 	
 	private int port;
 	private ServerSocket serverSocket;
+	private Socket clientSocket;
 	private Collection<IServerListener> listeners;
 	
 	public Server(int port) {
@@ -38,32 +40,40 @@ public class Server extends Thread implements IServer {
 			return;
 		}
 		
+		System.out.println("Server started");
+		
 		while (!serverSocket.isClosed()) {
 			try {
-				Socket clientSocket = serverSocket.accept();
+				clientSocket = serverSocket.accept();
+				InputStream stream = clientSocket.getInputStream();
+				InputStreamReader reader = new InputStreamReader(stream);
+				BufferedReader in = new BufferedReader(reader);
+				System.out.println("Client connected");
 				
-				InputStream clientStream = clientSocket.getInputStream();
-				ObjectInputStream in = new ObjectInputStream(clientStream);
-				boolean ok = true;
-				
-				while (ok) {
-					Object input = in.readObject();
+				while (true) {
+					String keyName;
 					
-					if (input == null) {
-						ok = false;
+					try {
+						keyName = in.readLine();
 					}
-					else {
-						String keyName = (String)input;
-						
-						for (IServerListener listener : listeners) {
-							listener.keyPressed(keyName);
-							listener.keyReleased(keyName);
-						}
+					catch (Exception e) {
+						System.out.println(e.getClass().getSimpleName());
+						break;
+					}
+					
+					if (keyName == null) break;
+					
+					for (IServerListener listener : listeners) {
+						listener.keyPressed(keyName);
+						listener.keyReleased(keyName);
 					}
 				}
 				
 				in.close();
+				reader.close();
 				clientSocket.close();
+				clientSocket = null;
+				System.out.println("Client disconnected");
 			}
 			catch (SocketException e) {}
 			catch (Exception e) {
@@ -78,8 +88,14 @@ public class Server extends Thread implements IServer {
 	@Override
 	public void close() {
 		try {
+			if (clientSocket != null) {
+				clientSocket.close();
+				System.out.println("Client connection interrupted");
+			}
+			
 			serverSocket.close();
 			join();
+			System.out.println("Server stopped");
 		}
 		catch (Exception e) {
 			System.err.println("Error while closing the server: " + e.getMessage());
