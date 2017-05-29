@@ -1,4 +1,4 @@
-package com.GuillaumePayet.RemoteNumpad.server;
+package com.guillaumepayet.remotenumpad.server;
 
 import java.awt.AWTException;
 import java.awt.Image;
@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
-import com.GuillaumePayet.RemoteNumpad.server.tcp.TCPServer;
+import com.guillaumepayet.remotenumpad.server.tcp.TCPServer;
 
 public class VirtualNumpad implements INumpadServerListener {
 

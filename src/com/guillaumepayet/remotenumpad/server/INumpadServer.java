@@ -1,4 +1,4 @@
-package com.GuillaumePayet.RemoteNumpad.server;
+package com.guillaumepayet.remotenumpad.server;
 
 public interface INumpadServer {
 	void addListener(INumpadServerListener listener);

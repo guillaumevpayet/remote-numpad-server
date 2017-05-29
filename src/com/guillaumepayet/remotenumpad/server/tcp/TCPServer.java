@@ -1,4 +1,4 @@
-package com.GuillaumePayet.RemoteNumpad.server.tcp;
+package com.guillaumepayet.remotenumpad.server.tcp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import java.net.SocketException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.GuillaumePayet.RemoteNumpad.server.INumpadServer;
-import com.GuillaumePayet.RemoteNumpad.server.INumpadServerListener;
+import com.guillaumepayet.remotenumpad.server.INumpadServer;
+import com.guillaumepayet.remotenumpad.server.INumpadServerListener;
 
 public class TCPServer extends Thread implements INumpadServer {
 	
