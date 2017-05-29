@@ -14,7 +14,7 @@ import java.net.URL;
 
 import com.GuillaumePayet.RemoteNumpad.server.tcp.TCPServer;
 
-public class VirtualNumpad implements INumpadListener {
+public class VirtualNumpad implements INumpadServerListener {
 
 	public static void main(String[] args) {
 		if (!SystemTray.isSupported()) {
@@ -27,7 +27,7 @@ public class VirtualNumpad implements INumpadListener {
 		if (args.length > 1)
 			port = Integer.parseInt(args[1]);
 		
-		INumpadListener listener = null;
+		INumpadServerListener listener = null;
 		
 		try {
 			listener = new VirtualNumpad();
@@ -70,6 +70,11 @@ public class VirtualNumpad implements INumpadListener {
 	
 	public VirtualNumpad() throws AWTException {
 		robot = new Robot();
+	}
+
+	@Override
+	public void onStatusChange(String status) {
+		System.out.println("Server status:" + status);
 	}
 
 	@Override

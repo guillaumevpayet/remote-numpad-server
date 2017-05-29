@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import com.GuillaumePayet.RemoteNumpad.server.INumpadServer;
-import com.GuillaumePayet.RemoteNumpad.server.INumpadListener;
+import com.GuillaumePayet.RemoteNumpad.server.INumpadServerListener;
 
 public class TCPServer extends Thread implements INumpadServer {
 	
@@ -21,25 +21,26 @@ public class TCPServer extends Thread implements INumpadServer {
 	private int port;
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
-	private Collection<INumpadListener> listeners;
+	private Collection<INumpadServerListener> listeners;
 	
 	public TCPServer(int port) {
 		this.port = port;
-		listeners = new HashSet<INumpadListener>();
+		listeners = new HashSet<INumpadServerListener>();
 	}
+	
 	
 	@Override
 	public void run() {
 		super.run();
 
 		try {
+			changeStatus("Starting...");
 			serverSocket = new ServerSocket(port);
+			changeStatus("Started");
 		} catch (IOException e) {
 			System.err.println("Unable to start the server: " + e.getMessage());
 			return;
 		}
-		
-		System.out.println("Server started");
 		
 		while (!serverSocket.isClosed()) {
 			try {
@@ -47,7 +48,7 @@ public class TCPServer extends Thread implements INumpadServer {
 				InputStream stream = clientSocket.getInputStream();
 				InputStreamReader reader = new InputStreamReader(stream);
 				BufferedReader in = new BufferedReader(reader);
-				System.out.println("Client connected");
+				changeStatus("Client connected");
 				
 				while (true) {
 					String input;
@@ -63,10 +64,10 @@ public class TCPServer extends Thread implements INumpadServer {
 						String keyName = input.substring(1);
 						
 						if (eventType == '+') {
-							for (INumpadListener listener : listeners)
+							for (INumpadServerListener listener : listeners)
 								listener.keyPressed(keyName);
 						} else if (eventType == '-') {
-							for (INumpadListener listener : listeners)
+							for (INumpadServerListener listener : listeners)
 								listener.keyReleased(keyName);
 						}
 					}
@@ -76,12 +77,23 @@ public class TCPServer extends Thread implements INumpadServer {
 				reader.close();
 				clientSocket.close();
 				clientSocket = null;
-				System.out.println("Client disconnected");
+				changeStatus("Client disconnected");
 			} catch (SocketException e) {
 			} catch (Exception e) {
 				System.err.println("Something went wrong: " + e.getMessage());
 			}
 		}
+	}
+	
+
+	@Override
+	public void addListener(INumpadServerListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeListener(INumpadServerListener listener) {
+		listeners.remove(listener);
 	}
 
 	@Override
@@ -95,19 +107,15 @@ public class TCPServer extends Thread implements INumpadServer {
 			
 			serverSocket.close();
 			join();
-			System.out.println("Server stopped");
+			changeStatus("Stopped");
 		} catch (Exception e) {
 			System.err.println("Error while closing the server: " + e.getMessage());
 		}
 	}
-
-	@Override
-	public void addListener(INumpadListener listener) {
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeListener(INumpadListener listener) {
-		listeners.remove(listener);
+	
+	
+	private void changeStatus(String status) {
+		for (INumpadServerListener listener : listeners)
+			listener.onStatusChange(status);
 	}
 }
