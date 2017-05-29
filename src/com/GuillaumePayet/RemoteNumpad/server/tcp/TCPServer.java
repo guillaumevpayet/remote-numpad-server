@@ -10,10 +10,10 @@ import java.net.SocketException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.GuillaumePayet.RemoteNumpad.server.IServer;
-import com.GuillaumePayet.RemoteNumpad.server.IServerListener;
+import com.GuillaumePayet.RemoteNumpad.server.INumpadServer;
+import com.GuillaumePayet.RemoteNumpad.server.INumpadListener;
 
-public class Server extends Thread implements IServer {
+public class TCPServer extends Thread implements INumpadServer {
 	
 	public static final int DEFAULT_PORT = 4444;
 	
@@ -21,11 +21,11 @@ public class Server extends Thread implements IServer {
 	private int port;
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
-	private Collection<IServerListener> listeners;
+	private Collection<INumpadListener> listeners;
 	
-	public Server(int port) {
+	public TCPServer(int port) {
 		this.port = port;
-		listeners = new HashSet<IServerListener>();
+		listeners = new HashSet<INumpadListener>();
 	}
 	
 	@Override
@@ -34,8 +34,7 @@ public class Server extends Thread implements IServer {
 
 		try {
 			serverSocket = new ServerSocket(port);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			System.err.println("Unable to start the server: " + e.getMessage());
 			return;
 		}
@@ -51,21 +50,25 @@ public class Server extends Thread implements IServer {
 				System.out.println("Client connected");
 				
 				while (true) {
-					String keyName;
+					String input;
 					
 					try {
-						keyName = in.readLine();
-					}
-					catch (Exception e) {
-						System.out.println(e.getClass().getSimpleName());
+						input = in.readLine();
+					} catch (SocketException e) { break; }
+					
+					if (input == null) {
 						break;
-					}
-					
-					if (keyName == null) break;
-					
-					for (IServerListener listener : listeners) {
-						listener.keyPressed(keyName);
-						listener.keyReleased(keyName);
+					} else {
+						char eventType = input.charAt(0);
+						String keyName = input.substring(1);
+						
+						if (eventType == '+') {
+							for (INumpadListener listener : listeners)
+								listener.keyPressed(keyName);
+						} else if (eventType == '-') {
+							for (INumpadListener listener : listeners)
+								listener.keyReleased(keyName);
+						}
 					}
 				}
 				
@@ -74,9 +77,8 @@ public class Server extends Thread implements IServer {
 				clientSocket.close();
 				clientSocket = null;
 				System.out.println("Client disconnected");
-			}
-			catch (SocketException e) {}
-			catch (Exception e) {
+			} catch (SocketException e) {
+			} catch (Exception e) {
 				System.err.println("Something went wrong: " + e.getMessage());
 			}
 		}
@@ -88,28 +90,24 @@ public class Server extends Thread implements IServer {
 	@Override
 	public void close() {
 		try {
-			if (clientSocket != null) {
+			if (clientSocket != null)
 				clientSocket.close();
-				System.out.println("Client connection interrupted");
-			}
 			
 			serverSocket.close();
 			join();
 			System.out.println("Server stopped");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.err.println("Error while closing the server: " + e.getMessage());
 		}
 	}
 
 	@Override
-	public void addListener(IServerListener listener) {
+	public void addListener(INumpadListener listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(IServerListener listener) {
+	public void removeListener(INumpadListener listener) {
 		listeners.remove(listener);
 	}
-
 }

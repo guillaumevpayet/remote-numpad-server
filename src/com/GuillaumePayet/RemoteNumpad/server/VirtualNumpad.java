@@ -12,9 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
-import com.GuillaumePayet.RemoteNumpad.server.tcp.Server;
+import com.GuillaumePayet.RemoteNumpad.server.tcp.TCPServer;
 
-public class VirtualNumpad implements IServerListener {
+public class VirtualNumpad implements INumpadListener {
 
 	public static void main(String[] args) {
 		if (!SystemTray.isSupported()) {
@@ -22,12 +22,12 @@ public class VirtualNumpad implements IServerListener {
 			return;
 		}
 		
-		int port = Server.DEFAULT_PORT;
+		int port = TCPServer.DEFAULT_PORT;
 		
 		if (args.length > 1)
 			port = Integer.parseInt(args[1]);
 		
-		IServerListener listener = null;
+		INumpadListener listener = null;
 		
 		try {
 			listener = new VirtualNumpad();
@@ -36,7 +36,7 @@ public class VirtualNumpad implements IServerListener {
 			return;
 		}
 
-		Server server = new Server(port);
+		TCPServer server = new TCPServer(port);
 		server.addListener(listener);
 		
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -86,10 +86,9 @@ public class VirtualNumpad implements IServerListener {
 	private int keycode(String keyName) {
 		try {
 			return KeyEvent.VK_NUMPAD0 + Integer.parseInt(keyName);
-		}
-		catch (NumberFormatException e) {
-			switch (keyName) {
-			case "Enter": return KeyEvent.VK_ENTER;
+		} catch (NumberFormatException e) {
+			switch (keyName.toLowerCase()) {
+			case "enter": return KeyEvent.VK_ENTER;
 			case "/": return KeyEvent.VK_DIVIDE;
 			case "*": return KeyEvent.VK_MULTIPLY;
 			case "-": return KeyEvent.VK_SUBTRACT;
@@ -99,5 +98,4 @@ public class VirtualNumpad implements IServerListener {
 			}
 		}
 	}
-	
 }
