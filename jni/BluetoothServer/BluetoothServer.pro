@@ -6,6 +6,8 @@
 
 QT       -= gui
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += bluetooth
+
 TARGET = BluetoothServer
 TEMPLATE = lib
 
@@ -23,10 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        bluetoothserver.cpp
+    com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer.cpp \
+    bluetoothserver.cpp
 
 HEADERS += \
-    com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer.h
+    com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer.h \
+    bluetoothserver.h
 
 INCLUDEPATH += /Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home/include
 INCLUDEPATH += /Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home/include/darwin

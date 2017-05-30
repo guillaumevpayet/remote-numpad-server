@@ -25,7 +25,7 @@ public class TCPServer extends Thread implements INumpadServer {
 	
 	public TCPServer(int port) {
 		this.port = port;
-		listeners = new HashSet<INumpadServerListener>();
+		listeners = new HashSet<>();
 	}
 	
 	
@@ -34,7 +34,6 @@ public class TCPServer extends Thread implements INumpadServer {
 		super.run();
 
 		try {
-			changeStatus("Starting...");
 			serverSocket = new ServerSocket(port);
 			changeStatus("Started");
 		} catch (IOException e) {

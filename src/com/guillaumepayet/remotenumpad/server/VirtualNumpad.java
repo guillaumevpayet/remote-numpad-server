@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
-import com.guillaumepayet.remotenumpad.server.tcp.TCPServer;
+import com.guillaumepayet.remotenumpad.server.bluetooth.BluetoothServer;
 
 public class VirtualNumpad implements INumpadServerListener {
 
@@ -21,11 +21,6 @@ public class VirtualNumpad implements INumpadServerListener {
 			System.err.println("A system tray is required to run this application.");
 			return;
 		}
-		
-		int port = TCPServer.DEFAULT_PORT;
-		
-		if (args.length > 1)
-			port = Integer.parseInt(args[1]);
 		
 		INumpadServerListener listener = null;
 		
@@ -36,7 +31,7 @@ public class VirtualNumpad implements INumpadServerListener {
 			return;
 		}
 
-		TCPServer server = new TCPServer(port);
+		INumpadServer server = new BluetoothServer();
 		server.addListener(listener);
 		
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -74,7 +69,7 @@ public class VirtualNumpad implements INumpadServerListener {
 
 	@Override
 	public void onStatusChange(String status) {
-		System.out.println("Server status:" + status);
+		System.out.println("Server status: " + status);
 	}
 
 	@Override

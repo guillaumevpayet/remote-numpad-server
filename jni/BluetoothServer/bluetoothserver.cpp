@@ -1,28 +1,48 @@
-#include "com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer.h"
+#include "bluetoothserver.h"
 
-#include <QDebug>
+static const QBluetoothUuid NUMPAD_UUID(QString("6be5ccef-5d32-48e3-a3a0-d89e558a40f1"));
 
-
-JNIEXPORT void JNICALL Java_com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer_addListener
-  (JNIEnv *env, jobject obj, jobject listener)
+BluetoothServer::BluetoothServer(JNIEnv *env) : QObject(Q_NULLPTR), env(env), onStatusChange(Q_NULLPTR)
 {
-    qInfo() << "Adding listener";
+    jclass INumpadServerListener = env->FindClass("com/guillaumepayet/remotenumpad/server/INumpadServerListener");
+
+    onStatusChange = env->GetMethodID(INumpadServerListener,
+                                      "onStatusChange",
+                                      "(Ljava/lang/String;)V");
 }
 
-JNIEXPORT void JNICALL Java_com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer_removeListener
-  (JNIEnv *env, jobject obj, jobject listener)
+
+void BluetoothServer::addListener(jobject listener)
 {
-    qInfo() << "Removing listener";
+    listeners.insert(listener);
 }
 
-JNIEXPORT void JNICALL Java_com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer_open
-  (JNIEnv *env, jobject obj)
+void BluetoothServer::removeListener(jobject listener)
 {
-    qInfo() << "Opening server";
+    listeners.erase(listener);
 }
 
-JNIEXPORT void JNICALL Java_com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer_close
-  (JNIEnv *env, jobject obj)
+void BluetoothServer::open()
 {
-    qInfo() << "Closing server";
+    changeStatus("Opened");
+}
+
+void BluetoothServer::close()
+{
+    changeStatus("Closed");
+}
+
+
+void BluetoothServer::changeStatus(const std::string &status)
+{
+    char *buffer = new char[status.length() + 1];
+    strcpy(buffer, status.c_str());
+//    jstring jStatus = env->NewStringUTF(buffer);
+
+    for (jobject listener : listeners)
+        qInfo() << buffer << "->" << listener;
+//        env->CallVoidMethod(listener, onStatusChange, jStatus);
+
+//    env->DeleteLocalRef(jStatus);
+    delete[] buffer;
 }

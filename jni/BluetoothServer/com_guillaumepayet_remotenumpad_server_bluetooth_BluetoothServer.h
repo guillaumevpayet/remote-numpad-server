@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer
+ * Method:    init
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer_init
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_guillaumepayet_remotenumpad_server_bluetooth_BluetoothServer
  * Method:    addListener
  * Signature: (Lcom/guillaumepayet/remotenumpad/server/INumpadServerListener;)V
  */
