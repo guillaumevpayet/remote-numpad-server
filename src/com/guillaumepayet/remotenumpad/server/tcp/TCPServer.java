@@ -23,6 +23,11 @@ public class TCPServer extends Thread implements INumpadServer {
 	private Socket clientSocket;
 	private Collection<INumpadServerListener> listeners;
 	
+	public TCPServer() {
+		this.port = DEFAULT_PORT;
+		listeners = new HashSet<>();
+	}
+	
 	public TCPServer(int port) {
 		this.port = port;
 		listeners = new HashSet<>();
@@ -31,8 +36,6 @@ public class TCPServer extends Thread implements INumpadServer {
 	
 	@Override
 	public void run() {
-		super.run();
-
 		try {
 			serverSocket = new ServerSocket(port);
 			changeStatus("Started");
@@ -64,10 +67,10 @@ public class TCPServer extends Thread implements INumpadServer {
 						
 						if (eventType == '+') {
 							for (INumpadServerListener listener : listeners)
-								listener.keyPressed(keyName);
+								listener.onKeyPressed(keyName);
 						} else if (eventType == '-') {
 							for (INumpadServerListener listener : listeners)
-								listener.keyReleased(keyName);
+								listener.onKeyReleased(keyName);
 						}
 					}
 				}
@@ -115,6 +118,6 @@ public class TCPServer extends Thread implements INumpadServer {
 	
 	private void changeStatus(String status) {
 		for (INumpadServerListener listener : listeners)
-			listener.onStatusChange(status);
+			listener.onStatusChanged(status);
 	}
 }

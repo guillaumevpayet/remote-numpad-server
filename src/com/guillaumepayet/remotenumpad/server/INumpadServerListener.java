@@ -1,7 +1,7 @@
 package com.guillaumepayet.remotenumpad.server;
 
 public interface INumpadServerListener {
-	void onStatusChange(String status);
-	void keyPressed(String keyName);
-	void keyReleased(String keyName);
+	void onStatusChanged(String status);
+	void onKeyPressed(String keyName);
+	void onKeyReleased(String keyName);
 }

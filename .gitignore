@@ -1,6 +1,2 @@
-/bin/
-*.log
-*.dylib
-*.so
-*.dll
+bin/
 
