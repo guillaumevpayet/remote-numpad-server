@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
-import com.guillaumepayet.remotenumpad.server.tcp.TCPServer;
+import com.guillaumepayet.remotenumpad.server.bluetooth.BluetoothServer;
 
 public class VirtualNumpad implements INumpadServerListener {
 
@@ -31,7 +31,7 @@ public class VirtualNumpad implements INumpadServerListener {
 			return;
 		}
 
-		INumpadServer server = new TCPServer();
+		INumpadServer server = new BluetoothServer();
 		server.addListener(listener);
 		
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -74,11 +74,13 @@ public class VirtualNumpad implements INumpadServerListener {
 
 	@Override
 	public void onKeyPressed(String keyName) {
+		System.out.println("Pressing " + keyName);
 		robot.keyPress(keycode(keyName));
 	}
 
 	@Override
 	public void onKeyReleased(String keyName) {
+		System.out.println("Releasing " + keyName);
 		robot.keyRelease(keycode(keyName));
 	}
 	
