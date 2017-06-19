@@ -60,7 +60,7 @@ public class BluetoothServer implements INumpadServer {
 		
 		if (os.contains("mac")) {
 			String insidePath = "/BluetoothServiceDictionary.plist";
-			String outsidePath = insidePath.substring(1);
+			String outsidePath = "." + insidePath.substring(1);
 			
 			try {
 				extractResource(insidePath, outsidePath);
