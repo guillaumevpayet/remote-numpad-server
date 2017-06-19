@@ -14,13 +14,18 @@ import com.guillaumepayet.remotenumpad.server.INumpadServerListener;
 
 public class BluetoothServer implements INumpadServer {
 	
-	private static String bluetoothServiceRecordPath = null;
-	
-	private static File extractResource(String path) throws IOException {
+	private static File extractResource(String path, String to) throws IOException {
 		String prefix = path.substring(1, path.lastIndexOf('.'));
 		String suffix = path.substring(path.lastIndexOf('.'));
 
-		File file = File.createTempFile(prefix, suffix);
+		File file;
+		
+		if (to != null) {
+			file = new File(to);
+			file.createNewFile();
+		} else {
+			file = File.createTempFile(prefix, suffix);
+		}
 		
 		if (!file.exists())
 			throw new FileNotFoundException();
@@ -40,11 +45,11 @@ public class BluetoothServer implements INumpadServer {
 	}
 	
 	static {
-		String libraryPath = "/" + System.mapLibraryName("BluetoothNumpadServer");
+		String libraryPath = "/" + System.mapLibraryName("BluetoothServer");
 		File library = null;
 		
 		try {
-			library = extractResource(libraryPath);
+			library = extractResource(libraryPath, null);
 		} catch (IOException e) {
 			System.err.println("Unable to extract native libraries.");
 			System.exit(1);
@@ -54,17 +59,15 @@ public class BluetoothServer implements INumpadServer {
 		String os = System.getProperty("os.name").toLowerCase();
 		
 		if (os.contains("mac")) {
-			String serviceRecordPath = "/BluetoothServiceRecord.plist";
-			File serviceRecord = null;
+			String insidePath = "/BluetoothServiceDictionary.plist";
+			String outsidePath = insidePath.substring(1);
 			
 			try {
-				serviceRecord = extractResource(serviceRecordPath);
+				extractResource(insidePath, outsidePath);
 			} catch (IOException e) {
-				System.err.println("Unable to extract bluetooth service record dictionary.");
+				System.err.println("Unable to extract bluetooth service dictionary.");
 				System.exit(1);
 			}
-			
-			bluetoothServiceRecordPath = serviceRecord.getPath();
 		}
 	}
 	
@@ -88,15 +91,10 @@ public class BluetoothServer implements INumpadServer {
 	
 
 	@Override
-	public void open() {
-		open(bluetoothServiceRecordPath);
-	}
+	public native void open();
 
 	@Override
 	public native void close();
-	
-	
-	private native void open(String path);
 	
 
 	private void changeStatus(String status) {

@@ -16,7 +16,7 @@ import com.guillaumepayet.remotenumpad.server.bluetooth.BluetoothServer;
 
 public class VirtualNumpad implements INumpadServerListener {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		if (!SystemTray.isSupported()) {
 			System.err.println("A system tray is required to run this application.");
 			return;
@@ -74,13 +74,11 @@ public class VirtualNumpad implements INumpadServerListener {
 
 	@Override
 	public void onKeyPressed(String keyName) {
-		System.out.println("Pressing " + keyName);
 		robot.keyPress(keycode(keyName));
 	}
 
 	@Override
 	public void onKeyReleased(String keyName) {
-		System.out.println("Releasing " + keyName);
 		robot.keyRelease(keycode(keyName));
 	}
 	
