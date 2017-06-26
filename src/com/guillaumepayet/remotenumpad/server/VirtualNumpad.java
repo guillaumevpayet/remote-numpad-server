@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.net.URL;
 
 import com.guillaumepayet.remotenumpad.server.bluetooth.BluetoothServer;
+import com.guillaumepayet.remotenumpad.server.tcp.TCPServer;
 
 public class VirtualNumpad implements INumpadServerListener {
 
@@ -30,9 +31,12 @@ public class VirtualNumpad implements INumpadServerListener {
 			System.err.println("Unable to generate system events.");
 			return;
 		}
-
-		INumpadServer server = new BluetoothServer();
-		server.addListener(listener);
+		
+		INumpadServer tcpServer = new TCPServer();
+		tcpServer.addListener(listener);
+		
+		INumpadServer bluetoothServer = new BluetoothServer();
+		bluetoothServer.addListener(listener);
 		
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		URL iconURL = VirtualNumpad.class.getResource("/res/Icon.png");
@@ -53,11 +57,13 @@ public class VirtualNumpad implements INumpadServerListener {
 		}
 		
 		exitItem.addActionListener((ActionEvent e) -> {
-			server.close();
+			tcpServer.close();
+			bluetoothServer.close();
 			systemTray.remove(trayIcon);
 		});
 		
-		server.open();
+		tcpServer.open();
+		bluetoothServer.open();
 	}
 	
 	
