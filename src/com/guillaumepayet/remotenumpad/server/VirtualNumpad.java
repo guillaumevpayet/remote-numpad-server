@@ -6,18 +6,20 @@ import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Robot;
 import java.awt.SystemTray;
-import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 import com.guillaumepayet.remotenumpad.server.bluetooth.BluetoothServer;
 import com.guillaumepayet.remotenumpad.server.tcp.TCPServer;
 
 public class VirtualNumpad implements INumpadServerListener {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
 		if (!SystemTray.isSupported()) {
 			System.err.println("A system tray is required to run this application.");
 			return;
@@ -38,15 +40,15 @@ public class VirtualNumpad implements INumpadServerListener {
 		INumpadServer bluetoothServer = new BluetoothServer();
 		bluetoothServer.addListener(listener);
 		
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		URL iconURL = VirtualNumpad.class.getResource("/res/Icon.png");
-		Image image = toolkit.getImage(iconURL);
+		URL imageURL = listener.getClass().getResource("/res/Icon.png");
+		Image image = ImageIO.read(imageURL);
 
 		MenuItem exitItem = new MenuItem("Exit");
 		PopupMenu popupMenu = new PopupMenu("Remote Numpad");
 		popupMenu.add(exitItem);
 
 		TrayIcon trayIcon = new TrayIcon(image, "Remote Numpad", popupMenu);
+		trayIcon.setImageAutoSize(true);
 		SystemTray systemTray = SystemTray.getSystemTray();
 		
 		try {
