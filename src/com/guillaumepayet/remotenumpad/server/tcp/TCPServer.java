@@ -15,7 +15,7 @@ import com.guillaumepayet.remotenumpad.server.INumpadServerListener;
 
 public class TCPServer extends Thread implements INumpadServer {
 	
-	public static final int DEFAULT_PORT = 4444;
+	public static final int DEFAULT_PORT = 4576;
 	
 	
 	private int port;
