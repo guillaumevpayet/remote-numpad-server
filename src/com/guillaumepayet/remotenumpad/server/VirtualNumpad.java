@@ -10,6 +10,7 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -44,10 +45,11 @@ public class VirtualNumpad implements INumpadServerListener {
 		Image image = ImageIO.read(imageURL);
 
 		MenuItem exitItem = new MenuItem("Exit");
-		PopupMenu popupMenu = new PopupMenu("Remote Numpad");
+		PopupMenu popupMenu = new PopupMenu();
 		popupMenu.add(exitItem);
-
-		TrayIcon trayIcon = new TrayIcon(image, "Remote Numpad", popupMenu);
+		
+		String tooltip = "Remote Numpad [" + InetAddress.getLocalHost() + "]";
+		TrayIcon trayIcon = new TrayIcon(image, tooltip, popupMenu);
 		trayIcon.setImageAutoSize(true);
 		SystemTray systemTray = SystemTray.getSystemTray();
 		
