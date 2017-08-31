@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -47,36 +50,44 @@ public class TCPServer extends Thread implements INumpadServer {
 		while (!serverSocket.isClosed()) {
 			try {
 				clientSocket = serverSocket.accept();
-				InputStream stream = clientSocket.getInputStream();
-				InputStreamReader reader = new InputStreamReader(stream);
-				BufferedReader in = new BufferedReader(reader);
-				changeStatus("Client connected via TCP");
 				
-				while (true) {
-					String input;
+				try (Writer out = new OutputStreamWriter(clientSocket.getOutputStream())) {
+					InputStream inputStream = clientSocket.getInputStream();
 					
-					try {
-						input = in.readLine();
-					} catch (SocketException e) { break; }
-					
-					if (input == null) {
-						break;
-					} else {
-						char eventType = input.charAt(0);
-						String keyName = input.substring(1);
-						
-						if (eventType == '+') {
-							for (INumpadServerListener listener : listeners)
-								listener.onKeyPressed(keyName);
-						} else if (eventType == '-') {
-							for (INumpadServerListener listener : listeners)
-								listener.onKeyReleased(keyName);
+					try (InputStreamReader reader = new InputStreamReader(inputStream)) {
+						try (BufferedReader in = new BufferedReader(reader)) {
+							changeStatus("Client connected via TCP");
+							
+							while (true) {
+								String input;
+								
+								try {
+									input = in.readLine();
+								} catch (SocketException e) { break; }
+								
+								if (input == null) {
+									break;
+								} else if (input.toLowerCase().equals("name")) {
+									String name = InetAddress.getLocalHost().getHostName();
+		                            out.write(name + '\n');
+		                            out.flush();
+								} else {
+									char eventType = input.charAt(0);
+									String keyName = input.substring(1);
+									
+									if (eventType == '+') {
+										for (INumpadServerListener listener : listeners)
+											listener.onKeyPressed(keyName);
+									} else if (eventType == '-') {
+										for (INumpadServerListener listener : listeners)
+											listener.onKeyReleased(keyName);
+									}
+								}
+							}
 						}
 					}
 				}
 				
-				in.close();
-				reader.close();
 				clientSocket.close();
 				clientSocket = null;
 				changeStatus("Client disconnected from TCP");

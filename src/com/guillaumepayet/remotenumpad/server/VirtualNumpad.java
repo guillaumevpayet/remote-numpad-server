@@ -48,8 +48,7 @@ public class VirtualNumpad implements INumpadServerListener {
 		PopupMenu popupMenu = new PopupMenu();
 		popupMenu.add(exitItem);
 		
-		String tooltip = "Remote Numpad [" + InetAddress.getLocalHost() + "]";
-		TrayIcon trayIcon = new TrayIcon(image, tooltip, popupMenu);
+		TrayIcon trayIcon = new TrayIcon(image, "Remote Numpad Server", popupMenu);
 		trayIcon.setImageAutoSize(true);
 		SystemTray systemTray = SystemTray.getSystemTray();
 		
