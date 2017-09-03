@@ -37,10 +37,8 @@ public class VirtualNumpad implements INumpadServerListener {
 		INumpadServer tcpServer = new TCPServer();
 		tcpServer.addListener(listener);
 		
-		BluetoothServer bluetoothServer = new BluetoothServer();
-		
-		if (bluetoothServer.isAvailable())
-			bluetoothServer.addListener(listener);
+		INumpadServer bluetoothServer = new BluetoothServer();
+		bluetoothServer.addListener(listener);
 		
 		URL imageURL = listener.getClass().getResource("/res/Icon.png");
 		Image image = ImageIO.read(imageURL);
@@ -63,7 +61,7 @@ public class VirtualNumpad implements INumpadServerListener {
 		exitItem.addActionListener((ActionEvent e) -> {
 			tcpServer.close();
 			
-			if (bluetoothServer.isAvailable())
+			if (BluetoothServer.isBluetoothAvailable())
 				bluetoothServer.close();
 			
 			systemTray.remove(trayIcon);
@@ -71,7 +69,7 @@ public class VirtualNumpad implements INumpadServerListener {
 		
 		tcpServer.open();
 
-		if (bluetoothServer.isAvailable())
+		if (BluetoothServer.isBluetoothAvailable())
 			bluetoothServer.open();
 	}
 	
