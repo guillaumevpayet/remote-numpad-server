@@ -55,9 +55,15 @@ public class BluetoothServer implements INumpadServer {
 			System.exit(1);
 		}
 		
-		System.load(library.getPath());
+		try {
+			System.load(library.getPath());
+		} catch (UnsatisfiedLinkError e) {
+			bluetoothAvailable = false;
+		}
 	}
 	
+	
+	private static boolean bluetoothAvailable = true;
 	
 	private Collection<INumpadServerListener> listeners;
 	
@@ -82,6 +88,9 @@ public class BluetoothServer implements INumpadServer {
 
 	@Override
 	public native void close();
+	
+	
+	public boolean isAvailable() { return bluetoothAvailable; }
 	
 
 	private void changeStatus(String status) {

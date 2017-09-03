@@ -10,7 +10,6 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -38,8 +37,10 @@ public class VirtualNumpad implements INumpadServerListener {
 		INumpadServer tcpServer = new TCPServer();
 		tcpServer.addListener(listener);
 		
-		INumpadServer bluetoothServer = new BluetoothServer();
-		bluetoothServer.addListener(listener);
+		BluetoothServer bluetoothServer = new BluetoothServer();
+		
+		if (bluetoothServer.isAvailable())
+			bluetoothServer.addListener(listener);
 		
 		URL imageURL = listener.getClass().getResource("/res/Icon.png");
 		Image image = ImageIO.read(imageURL);
@@ -61,12 +62,17 @@ public class VirtualNumpad implements INumpadServerListener {
 		
 		exitItem.addActionListener((ActionEvent e) -> {
 			tcpServer.close();
-			bluetoothServer.close();
+			
+			if (bluetoothServer.isAvailable())
+				bluetoothServer.close();
+			
 			systemTray.remove(trayIcon);
 		});
 		
 		tcpServer.open();
-		bluetoothServer.open();
+
+		if (bluetoothServer.isAvailable())
+			bluetoothServer.open();
 	}
 	
 	
