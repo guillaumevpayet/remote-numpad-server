@@ -16,7 +16,8 @@
 	</MenuBar>
 	
 	<GridPane VBox.vgrow="ALWAYS" alignment="CENTER">
-		<Text text="Hello, World!" />
+		<Text fx:id="tcpStatusText" text="TCP Server: Not started" GridPane.rowIndex="0" />
+		<Text fx:id="bthStatusText" text="Bluetooth Server: Not started" GridPane.rowIndex="1" />
 	</GridPane>
 	
 </VBox>
