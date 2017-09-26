@@ -13,8 +13,9 @@ import java.net.SocketException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import com.guillaumepayet.remotenumpad.server.INumpadListener;
 import com.guillaumepayet.remotenumpad.server.INumpadServer;
-import com.guillaumepayet.remotenumpad.server.INumpadServerListener;
+import com.guillaumepayet.remotenumpad.server.IStatusListener;
 
 public class TCPServer extends Thread implements INumpadServer {
 	
@@ -24,16 +25,19 @@ public class TCPServer extends Thread implements INumpadServer {
 	private int port;
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
-	private Collection<INumpadServerListener> listeners;
+	private Collection<INumpadListener> numpadListeners;
+	private Collection<IStatusListener> statusListeners;
 	
 	public TCPServer() {
 		this.port = DEFAULT_PORT;
-		listeners = new HashSet<>();
+		numpadListeners = new HashSet<>();
+		statusListeners = new HashSet<>();
 	}
 	
 	public TCPServer(int port) {
 		this.port = port;
-		listeners = new HashSet<>();
+		numpadListeners = new HashSet<>();
+		statusListeners = new HashSet<>();
 	}
 	
 	
@@ -76,10 +80,10 @@ public class TCPServer extends Thread implements INumpadServer {
 									String keyName = input.substring(1);
 									
 									if (eventType == '+') {
-										for (INumpadServerListener listener : listeners)
+										for (INumpadListener listener : numpadListeners)
 											listener.onKeyPressed(keyName);
 									} else if (eventType == '-') {
-										for (INumpadServerListener listener : listeners)
+										for (INumpadListener listener : numpadListeners)
 											listener.onKeyReleased(keyName);
 									}
 								}
@@ -100,14 +104,25 @@ public class TCPServer extends Thread implements INumpadServer {
 	
 
 	@Override
-	public void addListener(INumpadServerListener listener) {
-		listeners.add(listener);
+	public void addNumpadListener(INumpadListener listener) {
+		numpadListeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(INumpadServerListener listener) {
-		listeners.remove(listener);
+	public void removeNumpadListener(INumpadListener listener) {
+		numpadListeners.remove(listener);
 	}
+
+	@Override
+	public void addStatusListener(IStatusListener listener) {
+		statusListeners.add(listener);
+	}
+
+	@Override
+	public void removeStatusListener(IStatusListener listener) {
+		statusListeners.remove(listener);
+	}
+	
 
 	@Override
 	public void open() { start(); }
@@ -128,7 +143,7 @@ public class TCPServer extends Thread implements INumpadServer {
 	
 	
 	private void changeStatus(String status) {
-		for (INumpadServerListener listener : listeners)
+		for (IStatusListener listener : statusListeners)
 			listener.onStatusChanged(status);
 	}
 }

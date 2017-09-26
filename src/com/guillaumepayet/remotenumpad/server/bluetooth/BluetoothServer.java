@@ -10,7 +10,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import com.guillaumepayet.remotenumpad.server.INumpadServer;
-import com.guillaumepayet.remotenumpad.server.INumpadServerListener;
+import com.guillaumepayet.remotenumpad.server.INumpadListener;
+import com.guillaumepayet.remotenumpad.server.IStatusListener;
 
 public class BluetoothServer implements INumpadServer {
 	
@@ -69,22 +70,34 @@ public class BluetoothServer implements INumpadServer {
 	
 	public static boolean isBluetoothAvailable() { return bluetoothAvailable; }
 	
-	
-	private Collection<INumpadServerListener> listeners;
+
+	private Collection<INumpadListener> numpadListeners;
+	private Collection<IStatusListener> statusListeners;
 	
 	public BluetoothServer() {
-		listeners = new HashSet<>();
-	}
-	
-
-	@Override
-	public void addListener(INumpadServerListener listener) {
-		listeners.add(listener);
+		numpadListeners = new HashSet<>();
+		statusListeners = new HashSet<>();
 	}
 
+
 	@Override
-	public void removeListener(INumpadServerListener listener) {
-		listeners.remove(listener);
+	public void addNumpadListener(INumpadListener listener) {
+		numpadListeners.add(listener);
+	}
+
+	@Override
+	public void removeNumpadListener(INumpadListener listener) {
+		numpadListeners.remove(listener);
+	}
+
+	@Override
+	public void addStatusListener(IStatusListener listener) {
+		statusListeners.add(listener);
+	}
+
+	@Override
+	public void removeStatusListener(IStatusListener listener) {
+		statusListeners.remove(listener);
 	}
 	
 
@@ -96,16 +109,16 @@ public class BluetoothServer implements INumpadServer {
 	
 
 	private void changeStatus(String status) {
-		for (INumpadServerListener listener : listeners)
+		for (IStatusListener listener : statusListeners)
 			listener.onStatusChanged(status);
 	}
 	
 	private void dataReceived(String data) {
 		if (data.startsWith("+")) {
-			for (INumpadServerListener listener : listeners)
+			for (INumpadListener listener : numpadListeners)
 				listener.onKeyPressed(data.substring(1));
 		} else if (data.startsWith("-")) {
-			for (INumpadServerListener listener : listeners)
+			for (INumpadListener listener : numpadListeners)
 				listener.onKeyReleased(data.substring(1));
 		}
 	}

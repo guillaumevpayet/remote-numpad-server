@@ -28,7 +28,6 @@ public class Application extends javafx.application.Application {
 	}
 	
 	
-	private MainController controller = null;
 	private Stage stage = null;
 	
 	private SystemTray systemTray = null;
@@ -42,25 +41,25 @@ public class Application extends javafx.application.Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		initStage(primaryStage);
-		initSystemTrayIcon();
-		
-		INumpadServerListener listener = null;
+		IStatusListener statusListener = initStage(primaryStage);
+		INumpadListener numpadListener = null;
 		
 		try {
-			listener = new VirtualNumpad();
+			numpadListener = new VirtualNumpad();
 		} catch (AWTException e) {
 			System.err.println("Unable to generate system events.");
 			return;
 		}
 		
 		tcpServer = new TCPServer();
-		tcpServer.addListener(listener);
-		tcpServer.addListener(controller);
+		tcpServer.addNumpadListener(numpadListener);
+		tcpServer.addStatusListener(statusListener);
 		
 		bluetoothServer = new BluetoothServer();
-		bluetoothServer.addListener(listener);
-		bluetoothServer.addListener(controller);
+		bluetoothServer.addNumpadListener(numpadListener);
+		bluetoothServer.addStatusListener(statusListener);
+		
+		initSystemTrayIcon();
 		
 		tcpServer.open();
 
@@ -83,16 +82,17 @@ public class Application extends javafx.application.Application {
 	}
 	
 	
-	private void initStage(Stage primaryStage) throws IOException {
+	private IStatusListener initStage(Stage primaryStage) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("Main.fxml"));
 		Parent root = loader.load();
-		controller = loader.getController();
-//		Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 		Scene scene = new Scene(root, 300, 100);
 		
 		primaryStage.setTitle("Remote Numpad");
+		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
 		stage = primaryStage;
+		
+		return loader.getController();
 	}
 	
 	private void initSystemTrayIcon() {
