@@ -41,7 +41,7 @@ public class TCPServer extends Thread implements INumpadServer {
 	public void run() {
 		try {
 			serverSocket = new ServerSocket(port);
-			changeStatus("Listening to port " + port);
+			changeStatus("TCP.0");
 		} catch (IOException e) {
 			System.err.println("Unable to start the server: " + e.getMessage());
 			return;
@@ -56,7 +56,7 @@ public class TCPServer extends Thread implements INumpadServer {
 					
 					try (InputStreamReader reader = new InputStreamReader(inputStream)) {
 						try (BufferedReader in = new BufferedReader(reader)) {
-							changeStatus("Client connected via TCP");
+							changeStatus("TCP.1");
 							
 							while (true) {
 								String input;
@@ -90,7 +90,7 @@ public class TCPServer extends Thread implements INumpadServer {
 				
 				clientSocket.close();
 				clientSocket = null;
-				changeStatus("Client disconnected from TCP");
+				changeStatus("TCP.2");
 			} catch (SocketException e) {
 			} catch (Exception e) {
 				System.err.println("Something went wrong: " + e.getMessage());
@@ -120,7 +120,7 @@ public class TCPServer extends Thread implements INumpadServer {
 			
 			serverSocket.close();
 			join();
-			changeStatus("Stopped listening");
+			changeStatus("TCP.3");
 		} catch (Exception e) {
 			System.err.println("Error while closing the server: " + e.getMessage());
 		}

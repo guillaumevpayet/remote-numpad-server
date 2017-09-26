@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 
 import com.guillaumepayet.remotenumpad.server.bluetooth.BluetoothServer;
 import com.guillaumepayet.remotenumpad.server.tcp.TCPServer;
@@ -77,7 +78,7 @@ public class Application extends javafx.application.Application {
 		}
 		
 		tcpServer.close();
-		systemTray.remove(trayIcon);
+		SwingUtilities.invokeLater(() -> systemTray.remove(trayIcon));
 		super.stop();
 	}
 	
