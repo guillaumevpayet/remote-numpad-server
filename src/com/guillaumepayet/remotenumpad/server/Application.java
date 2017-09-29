@@ -23,8 +23,27 @@ import javafx.stage.Stage;
 
 public class Application extends javafx.application.Application {
 	
-	public static void main(String[] args) {
-		Application.launch(args);
+	private static INumpadServer tcpServer;
+	private static INumpadServer bluetoothServer;
+	
+	private static boolean ready = false;
+	
+	public static void main(String[] args) throws InterruptedException {
+		tcpServer = new TCPServer();
+		bluetoothServer = new BluetoothServer();
+		
+		Thread jfxThread = new Thread(() -> Application.launch(args));
+		jfxThread.start();
+		
+		while (!ready)
+			Thread.yield();
+
+		tcpServer.open();
+		
+		if (BluetoothServer.isBluetoothAvailable())
+			bluetoothServer.open();
+		
+		jfxThread.join();
 	}
 	
 	
@@ -32,11 +51,6 @@ public class Application extends javafx.application.Application {
 	
 	private SystemTray systemTray = null;
 	private TrayIcon trayIcon = null;
-	
-	private INumpadServer tcpServer;
-	private INumpadServer bluetoothServer;
-	
-	private Thread bluetoothThread = null;
 	
 	
 	@Override
@@ -51,30 +65,21 @@ public class Application extends javafx.application.Application {
 			return;
 		}
 		
-		tcpServer = new TCPServer();
 		tcpServer.addNumpadListener(numpadListener);
 		tcpServer.addStatusListener(statusListener);
 		
-		bluetoothServer = new BluetoothServer();
 		bluetoothServer.addNumpadListener(numpadListener);
 		bluetoothServer.addStatusListener(statusListener);
 		
-		initSystemTrayIcon();
+		ready = true;
 		
-		tcpServer.open();
-
-		if (BluetoothServer.isBluetoothAvailable()) {
-			bluetoothThread = new Thread(bluetoothServer::open);
-			bluetoothThread.start();
-		}
+		initSystemTrayIcon();
 	}
 	
 	@Override
 	public void stop() throws Exception {
-		if (BluetoothServer.isBluetoothAvailable()) {
+		if (BluetoothServer.isBluetoothAvailable())
 			bluetoothServer.close();
-			bluetoothThread.join();
-		}
 		
 		tcpServer.close();
 		SwingUtilities.invokeLater(() -> systemTray.remove(trayIcon));
