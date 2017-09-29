@@ -11,7 +11,7 @@ public class MainController implements IStatusListener {
 			Paint.valueOf("green"),
 			Paint.valueOf("grey"),
 			Paint.valueOf("blue"),
-			Paint.valueOf("green"),
+			Paint.valueOf("teal"),
 			Paint.valueOf("orange")
 	};
 	
