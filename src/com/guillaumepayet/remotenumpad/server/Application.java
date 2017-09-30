@@ -38,11 +38,14 @@ public class Application extends javafx.application.Application {
 		while (!ready)
 			Thread.yield();
 
-		tcpServer.open();
+		Thread tcpThread = new Thread(tcpServer::open);
+		tcpThread.start();
 		
-		if (BluetoothServer.isBluetoothAvailable())
+		if (BluetoothServer.isBluetoothAvailable()) {
 			bluetoothServer.open();
+		}
 		
+		tcpThread.join();
 		jfxThread.join();
 	}
 	

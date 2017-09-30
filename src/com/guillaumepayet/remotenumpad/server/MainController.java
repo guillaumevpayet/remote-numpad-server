@@ -11,7 +11,7 @@ public class MainController implements IStatusListener {
 			Paint.valueOf("green"),
 			Paint.valueOf("grey"),
 			Paint.valueOf("blue"),
-			Paint.valueOf("teal"),
+			Paint.valueOf("green"),
 			Paint.valueOf("orange")
 	};
 	
@@ -19,32 +19,12 @@ public class MainController implements IStatusListener {
 	@FXML private Text tcpStatusText;
 	@FXML private Text bthStatusText;
 	
-	private Thread thread;
-	
 
 	@Override
 	public void onStatusChanged(String status) {
 		String[] parts = status.split("\\.");
 		int code = Integer.parseInt(parts[1]);
 		String message = interpretCode(code);
-		
-		if (parts.length == 3) {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-			}
-		} else if (code == 3) {
-			thread = new Thread(() -> {
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-				}
-				
-				Platform.runLater(() -> onStatusChanged(parts[0] + ".0.0"));
-			});
-			
-			thread.start();
-		}
 		
 		if (parts[0].equals("TCP")) {
 			tcpStatusText.setText(message);
@@ -61,10 +41,11 @@ public class MainController implements IStatusListener {
 	
 	private String interpretCode(int code) {
 		switch (code) {
-		case 0: return "Server ready";
+		case 0:
+		case 3: return "Server ready";
 		case 1: return "Server stopped";
 		case 2: return "Client connected";
-		case 3: return "Client disconnected";
+//		case 3: return "Client disconnected";
 		case 4: return "Error";
 		default: return "Unknown";
 		}
