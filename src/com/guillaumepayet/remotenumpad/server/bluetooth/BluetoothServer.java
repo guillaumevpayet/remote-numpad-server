@@ -53,9 +53,7 @@ public class BluetoothServer implements INumpadServer {
 	static {
 		String os = System.getProperty("os.name").toLowerCase();
 		
-		System.out.println("os = " + os);
-		
-		if (!os.equals("linux")) {
+		if (os.startsWith("windows") || os.startsWith("mac")) {
 			String libraryPath = "/" + System.mapLibraryName("BluetoothServer");
 			File library = null;
 			
@@ -72,7 +70,7 @@ public class BluetoothServer implements INumpadServer {
 			} catch (UnsatisfiedLinkError e) {
 			}
 			
-			if (os.contains("mac") && bluetoothAvailable) {
+			if (os.startsWith("mac") && bluetoothAvailable) {
 				String insidePath = "/BluetoothServiceDictionary.plist";
 				String outsidePath = "." + insidePath.substring(1);
 				
