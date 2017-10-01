@@ -63,6 +63,20 @@ public class BluetoothServer implements INumpadServer {
 			System.out.println("Bluetooth is not available.");
 			bluetoothAvailable = false;
 		}
+		
+		String os = System.getProperty("os.name").toLowerCase();
+		
+		if (os.contains("mac")) {
+			String insidePath = "/BluetoothServiceDictionary.plist";
+			String outsidePath = "." + insidePath.substring(1);
+			
+			try {
+				extractResource(insidePath, outsidePath);
+			} catch (IOException e) {
+				System.err.println("Unable to extract the Bluetooth service dictionary.");
+				System.exit(1);
+			}
+		}
 	}
 	
 	
