@@ -15,6 +15,11 @@ import com.guillaumepayet.remotenumpad.server.IStatusListener;
 
 public class BluetoothServer implements INumpadServer {
 	
+	private static boolean bluetoothAvailable = false;
+	
+	public static boolean isBluetoothAvailable() { return bluetoothAvailable; }
+	
+	
 	private static File extractResource(String path, String to) throws IOException {
 		String prefix = path.substring(1, path.lastIndexOf('.'));
 		String suffix = path.substring(path.lastIndexOf('.'));
@@ -46,43 +51,40 @@ public class BluetoothServer implements INumpadServer {
 	}
 	
 	static {
-		String libraryPath = "/" + System.mapLibraryName("BluetoothServer");
-		File library = null;
-		
-		try {
-			library = extractResource(libraryPath, null);
-		} catch (IOException e) {
-			System.err.println("Unable to extract native libraries.");
-			System.exit(1);
-		}
-		
-		try {
-			System.load(library.getPath());
-			bluetoothAvailable = true;
-		} catch (UnsatisfiedLinkError e) {
-			System.out.println("Bluetooth is not available.");
-			bluetoothAvailable = false;
-		}
-		
 		String os = System.getProperty("os.name").toLowerCase();
 		
-		if (os.contains("mac")) {
-			String insidePath = "/BluetoothServiceDictionary.plist";
-			String outsidePath = "." + insidePath.substring(1);
+		System.out.println("os = " + os);
+		
+		if (!os.equals("linux")) {
+			String libraryPath = "/" + System.mapLibraryName("BluetoothServer");
+			File library = null;
 			
 			try {
-				extractResource(insidePath, outsidePath);
+				library = extractResource(libraryPath, null);
 			} catch (IOException e) {
-				System.err.println("Unable to extract the Bluetooth service dictionary.");
+				System.err.println("Unable to extract native libraries.");
 				System.exit(1);
+			}
+			
+			try {
+				System.load(library.getPath());
+				bluetoothAvailable = true;
+			} catch (UnsatisfiedLinkError e) {
+			}
+			
+			if (os.contains("mac") && bluetoothAvailable) {
+				String insidePath = "/BluetoothServiceDictionary.plist";
+				String outsidePath = "." + insidePath.substring(1);
+				
+				try {
+					extractResource(insidePath, outsidePath);
+				} catch (IOException e) {
+					System.err.println("Unable to extract the Bluetooth service dictionary.");
+					System.exit(1);
+				}
 			}
 		}
 	}
-	
-	
-	private static boolean bluetoothAvailable;
-	
-	public static boolean isBluetoothAvailable() { return bluetoothAvailable; }
 	
 
 	private Collection<INumpadListener> numpadListeners;

@@ -19,10 +19,10 @@
 	
 	<GridPane VBox.vgrow="ALWAYS" alignment="CENTER" hgap="10" vgap="10">
 		<Label text="TCP" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-		<Text fx:id="tcpStatusText" text="Not started" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+		<Text fx:id="tcpStatusText" text="" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 		
 		<Label text="Bluetooth" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-		<Text fx:id="bthStatusText" text="Not started" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+		<Text fx:id="bthStatusText" text="Not available" GridPane.rowIndex="1" GridPane.columnIndex="1" fill="grey" />
 	</GridPane>
 	
 	<stylesheets>

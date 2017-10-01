@@ -43,6 +43,8 @@ public class Application extends javafx.application.Application {
 		
 		if (BluetoothServer.isBluetoothAvailable()) {
 			bluetoothServer.open();
+		} else {
+			System.out.println("Bluetooth is not available.");
 		}
 		
 		tcpThread.join();
