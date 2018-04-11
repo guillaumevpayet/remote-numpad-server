@@ -1,0 +1,46 @@
+buildscript {
+    ext.kotlin_version = '1.2.31'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+    }
+}
+
+group 'com.guillaumepayet'
+version '1.3.0-SNAPSHOT'
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+mainClassName = 'com.guillaumepayet.remotenumpadserver.MainKt'
+
+repositories {
+    mavenCentral()
+
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile 'net.sf.bluecove:bluecove:2.1.1-SNAPSHOT'
+//    compile 'net.sf.bluecove:bluecove-gpl:2.1.1-SNAPSHOT'
+//    compile 'net.sf.bluecove:bluecove-bluez:2.1.1-SNAPSHOT'
+    compile 'com.github.hypfvieh:dbus-java:2.7.4'
+    compile 'org.scijava:native-lib-loader:2.2.0'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}

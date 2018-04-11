@@ -1,2 +1,5 @@
-/bin/
+/.gradle/
+/.idea/
+/build/
 
+.DS_Store
