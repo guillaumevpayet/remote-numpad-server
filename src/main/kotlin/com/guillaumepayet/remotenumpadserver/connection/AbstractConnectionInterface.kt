@@ -22,8 +22,7 @@ package com.guillaumepayet.remotenumpadserver.connection
  * An abstract connection interface which should be extended by all connection interfaces.
  * This class handles all the generic observer-observable operations for connection interfaces.
  */
-abstract class AbstractConnectionInterface
-    : IConnectionInterface {
+abstract class AbstractConnectionInterface : IConnectionInterface {
 
     private val listeners = HashSet<IConnectionStatusListener>()
     private val processors = HashSet<IDataProcessor>()
@@ -50,6 +49,11 @@ abstract class AbstractConnectionInterface
     }
 
 
+    /**
+     * Receive a string from a connection interface and pass it onto the processors.
+     *
+     * @param string The string received
+     */
     fun onStringReception(string: String) {
         processors.forEach { it.processString(string) }
     }

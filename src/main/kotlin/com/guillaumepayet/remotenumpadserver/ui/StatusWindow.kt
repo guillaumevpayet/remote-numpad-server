@@ -26,9 +26,13 @@ import javax.swing.*
 /**
  * The status window is the main window of this application.
  * It stacks the required number of status panes, one for each connection interface available.
+ *
+ * @constructor Create the layout of the window
+ * @param connectionInterfaces A list of the [IConnectionInterface] to display
+ * @param closeAction The action to use when the application is to be closed
  */
 class StatusWindow(connectionInterfaces: Iterable<IConnectionInterface>, private val closeAction: () -> Unit)
-    : JFrame(Constants.appName) {
+    : JFrame(Constants.APP_NAME) {
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE

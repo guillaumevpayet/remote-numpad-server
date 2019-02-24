@@ -24,6 +24,9 @@ import java.awt.event.KeyEvent
 
 /**
  * This class processes key events and sends them over to a virtual keypad.
+ *
+ * @constructor Register as a listener for the [IConnectionInterface]
+ * @param connectionInterfaces The interfaces to listen to
  */
 class KeyEventProcessor(connectionInterfaces: Iterable<IConnectionInterface>) : IDataProcessor, IKeyEventGenerator {
 
@@ -56,6 +59,14 @@ class KeyEventProcessor(connectionInterfaces: Iterable<IConnectionInterface>) : 
     }
 
 
+    /**
+     * Convert a key code to an integer that can be used in a [KeyEvent].
+     *
+     * @param keyName The string representing a key
+     * @return The integer representing a key for a [KeyEvent]
+     *
+     * @see KeyEvent
+     */
     private fun keyCodeFromName(keyName: String): Int {
         return try {
             KeyEvent.VK_NUMPAD0 + keyName.toInt()

@@ -24,10 +24,16 @@ import com.guillaumepayet.remotenumpadserver.connection.ConnectionStatus
 /**
  * A connection interface based on Bluetooth. It uses a different backend depending on availability and operating
  * system.
+ *
+ * @constructor Pick an implementation depending on the OS
  */
 class BluetoothConnectionInterface : AbstractConnectionInterface() {
 
     companion object {
+
+        /**
+         * The UUID of the "Remote Numpad" service
+         */
         private const val uuid = "6be5ccef-5d32-48e3-a3a0-d89e558a40f1"
     }
 

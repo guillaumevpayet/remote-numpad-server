@@ -28,6 +28,8 @@ import javax.microedition.io.StreamConnectionNotifier
 /**
  * A bluetooth server based on Bluecove. It works on Windows and Linux. It is not used on MacOS because it uses
  * removed (obsoleted) APIs.
+ *
+ * @param connectionInterface The connection interface to send data to
  */
 class BluecoveServer(private val connectionInterface: BluetoothConnectionInterface) : IBluetoothServer {
 
@@ -96,6 +98,9 @@ class BluecoveServer(private val connectionInterface: BluetoothConnectionInterfa
     }
 
 
+    /**
+     * Close the open connection.
+     */
     private fun disconnect() {
         connection?.close()
         connection = null

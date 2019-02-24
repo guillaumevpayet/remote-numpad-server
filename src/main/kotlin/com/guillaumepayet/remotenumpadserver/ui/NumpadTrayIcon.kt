@@ -27,11 +27,18 @@ import javax.imageio.ImageIO
 
 /**
  * The tray icon is showing in the system tray if one is available, otherwise, it opens the status window directly.
+ *
+ * @constructor Load the image and prepare the system tray icon and options.
+ * @param openAction The action to use to open the [StatusWindow]
+ * @param closeAction The action to use to stop the application
  */
 class NumpadTrayIcon(private val openAction: () -> Unit, closeAction: () -> Unit) {
 
     companion object {
 
+        /**
+         * Flag that is true a system tray icon can be used.
+         */
         var isAvailable = false
             private set
 
@@ -61,7 +68,7 @@ class NumpadTrayIcon(private val openAction: () -> Unit, closeAction: () -> Unit
 
         if (image != null) {
             val popupMenu = PopupMenu()
-            trayIcon = TrayIcon(image, Constants.appName, popupMenu)
+            trayIcon = TrayIcon(image, Constants.APP_NAME, popupMenu)
 
             val openItem = MenuItem("Open")
             openItem.addActionListener { openAction() }
@@ -78,6 +85,9 @@ class NumpadTrayIcon(private val openAction: () -> Unit, closeAction: () -> Unit
         }
     }
 
+    /**
+     * Add the icon to the tray.
+     */
     fun show() {
         if (isAvailable) {
             systemTray?.add(trayIcon)
@@ -86,6 +96,9 @@ class NumpadTrayIcon(private val openAction: () -> Unit, closeAction: () -> Unit
         }
     }
 
+    /**
+     * Remove the icon from the tray.
+     */
     fun hide() {
         if (isAvailable)
             systemTray?.remove(trayIcon)

@@ -27,17 +27,22 @@ import java.io.IOException
 
 /**
  * A bluetooth server based on a native-made native library.
+ *
+ * @constructor Save the path to the service dictionary into a property
  */
 @Suppress("unused")
 class NativeServer(private val connectionInterface: BluetoothConnectionInterface) : IBluetoothServer {
 
+    /**
+     * @constructor The "static" constructor checks and loads the library.
+     */
     companion object {
 
+        /**
+         * The path to the service dictionary
+         */
         private var serviceDictionary = ""
 
-        /**
-         * This "static" constructor checks and loads the library.
-         */
         init {
             val tmpdir = System.getProperty("java.library.path").split(':')[0]
             System.setProperty("java.library.tmpdir", tmpdir)
@@ -79,12 +84,12 @@ class NativeServer(private val connectionInterface: BluetoothConnectionInterface
 
             file.deleteOnExit()
 
-            NativeServer::class.java.getResourceAsStream(path).use({ inputStream ->
+            NativeServer::class.java.getResourceAsStream(path).use { inputStream ->
                 val buffer = ByteArray(inputStream.available())
                 inputStream.read(buffer)
 
                 FileOutputStream(file).use { outputStream -> outputStream.write(buffer) }
-            })
+            }
 
             serviceDictionary = file.path
             return file

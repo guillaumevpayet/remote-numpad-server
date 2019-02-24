@@ -17,7 +17,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.2.70'
+    ext.kotlin_version = '1.3.21'
 
     repositories {
         mavenCentral()
@@ -30,7 +30,7 @@ buildscript {
 }
 
 group 'com.guillaumepayet'
-version '1.3.0-SNAPSHOT'
+version '1.4.0-SNAPSHOT'
 
 apply plugin: 'kotlin'
 apply plugin: 'application'
@@ -48,6 +48,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.1.1"
     compile 'net.sf.bluecove:bluecove:2.1.1-SNAPSHOT'
 //    compile 'net.sf.bluecove:bluecove-gpl:2.1.1-SNAPSHOT'
 //    compile 'net.sf.bluecove:bluecove-bluez:2.1.1-SNAPSHOT'

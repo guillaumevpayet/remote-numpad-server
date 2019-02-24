@@ -29,6 +29,9 @@ import kotlin.concurrent.*
 
 /**
  * Each status pane is linked to a connection interface. It reports on the status of the connection interface.
+ *
+ * @constructor Create the layout of a pane for the given [IConnectionInterface]
+ * @param connectionInterface The [IConnectionInterface] to display
  */
 class StatusPane(connectionInterface: IConnectionInterface) : JPanel(), IConnectionStatusListener {
 

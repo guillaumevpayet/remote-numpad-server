@@ -31,6 +31,10 @@ import java.net.SocketException
 class SocketConnectionInterface : AbstractConnectionInterface() {
 
     companion object {
+
+        /**
+         * The port to listen to.
+         */
         private const val PORT = 4576
     }
 

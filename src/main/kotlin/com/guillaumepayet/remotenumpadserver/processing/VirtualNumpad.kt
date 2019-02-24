@@ -22,6 +22,9 @@ import java.awt.Robot
 
 /**
  * This virtual keypad simulates key events using Java's Robot API.
+ *
+ * @constructor Start listening to the [IKeyEventGenerator]
+ * @param keyEventGenerator The key event generator to listen to
  */
 class VirtualNumpad(keyEventGenerator: IKeyEventGenerator) : IKeypad {
 

@@ -25,9 +25,16 @@ import com.guillaumepayet.remotenumpadserver.processing.KeyEventProcessor
 import com.guillaumepayet.remotenumpadserver.processing.VirtualNumpad
 import com.guillaumepayet.remotenumpadserver.ui.NumpadTrayIcon
 import com.guillaumepayet.remotenumpadserver.ui.StatusWindow
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.atomic.AtomicBoolean
 
-fun main(args: Array<String>) {
+/**
+ * The main function runs in a main coroutine, starts the other coroutines and waits for then to complete before
+ * cleaning up and closing.
+ */
+fun main() = runBlocking {
     // Prepare the server(s)
     val connectionInterfaces = ArrayList<IConnectionInterface>()
     connectionInterfaces += SocketConnectionInterface()
@@ -48,24 +55,15 @@ fun main(args: Array<String>) {
     VirtualNumpad(keyEventProcessor)
 
     // Start the server(s)
-    val serversThreads = connectionInterfaces.map {
-        val serverThread = Thread(it::listen)
-        serverThread.start()
-        serverThread
-    }
+    connectionInterfaces.forEach { GlobalScope.launch { it.listen() } }
 
     // Wait for the "close" signal (from the tray icon or the window)
-    while (running.get())
-        Thread.yield()
+    while (running.get());
 
     // Stop the servers
     connectionInterfaces.forEach { it.stop() }
-    serversThreads.forEach { it.join() }
 
     // Destroy the UI
     window.dispose()
     trayIcon.hide()
-
-    // TODO Find a better way to kill the Qt Bluetooth thread
-    System.exit(0)
 }
