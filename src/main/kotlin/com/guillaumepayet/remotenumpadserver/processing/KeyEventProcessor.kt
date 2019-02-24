@@ -61,6 +61,7 @@ class KeyEventProcessor(connectionInterfaces: Iterable<IConnectionInterface>) : 
             KeyEvent.VK_NUMPAD0 + keyName.toInt()
         } catch (e: NumberFormatException) {
             when (keyName.toLowerCase()) {
+                "backspace" -> KeyEvent.VK_BACK_SPACE
                 "enter" -> KeyEvent.VK_ENTER
                 "/" -> KeyEvent.VK_DIVIDE
                 "*" -> KeyEvent.VK_MULTIPLY
