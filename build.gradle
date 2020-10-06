@@ -17,7 +17,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.3.21'
+    ext.kotlin_version = '1.4.10'
 
     repositories {
         mavenCentral()
@@ -25,7 +25,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:6.0.0'
     }
 }
 
@@ -47,13 +47,13 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.1.1"
-    compile 'net.sf.bluecove:bluecove:2.1.1-SNAPSHOT'
-//    compile 'net.sf.bluecove:bluecove-gpl:2.1.1-SNAPSHOT'
-//    compile 'net.sf.bluecove:bluecove-bluez:2.1.1-SNAPSHOT'
-    compile 'com.github.hypfvieh:dbus-java:2.7.4'
-    compile 'org.scijava:native-lib-loader:2.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.3.9"
+    implementation 'net.sf.bluecove:bluecove:2.1.1-SNAPSHOT'
+//    implementation 'net.sf.bluecove:bluecove-gpl:2.1.1-SNAPSHOT'
+//    implementation 'net.sf.bluecove:bluecove-bluez:2.1.1-SNAPSHOT'
+    implementation 'com.github.hypfvieh:dbus-java:3.2.3'
+    implementation 'org.scijava:native-lib-loader:2.3.4'
 }
 
 compileKotlin {
