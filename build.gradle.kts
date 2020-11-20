@@ -25,6 +25,8 @@ dependencies {
 }
 
 tasks.shadowJar {
+    exclude("DebugProbesKt.bin")
+
     manifest {
         attributes["Main-Class"] = "com.guillaumepayet.remotenumpadserver.MainKt"
     }
