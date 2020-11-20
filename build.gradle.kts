@@ -21,7 +21,7 @@ dependencies {
 //    implementation("net.sf.bluecove:bluecove-gpl:2.1.1-SNAPSHOT")
 //    implementation("net.sf.bluecove:bluecove-bluez:2.1.1-SNAPSHOT")
 //    implementation("com.github.hypfvieh:dbus-java:3.2.3")
-//    implementation("org.scijava:native-lib-loader:2.3.4")
+    implementation("org.scijava:native-lib-loader:2.3.4")
 }
 
 tasks.shadowJar {
