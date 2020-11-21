@@ -1,6 +1,6 @@
 /*
  * Remote Numpad Server - a server for the Remote Numpad.
- * Copyright (C) 2016-2018 Guillaume Payet
+ * Copyright (C) 2016-2020 Guillaume Payet
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
