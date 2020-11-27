@@ -58,7 +58,8 @@ fun main() = runBlocking {
     connectionInterfaces.forEach { GlobalScope.launch { it.listen() } }
 
     // Wait for the "close" signal (from the tray icon or the window)
-    while (running.get());
+    while (running.get())
+        Thread.sleep(20)
 
     // Stop the servers
     connectionInterfaces.forEach { it.stop() }
