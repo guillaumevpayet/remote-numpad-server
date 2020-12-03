@@ -20,6 +20,7 @@ package com.guillaumepayet.remotenumpadserver.connection.bluetooth
 
 import com.guillaumepayet.remotenumpadserver.connection.AbstractConnectionInterface
 import com.guillaumepayet.remotenumpadserver.connection.ConnectionStatus
+import java.io.IOException
 
 /**
  * A connection interface based on Bluetooth. It uses a different backend depending on availability and operating
@@ -59,7 +60,11 @@ class BluetoothConnectionInterface : AbstractConnectionInterface() {
             servers += BluecoveServer(this)
 
         if (os.startsWith("mac"))
-            servers += NativeServer(this)
+            try {
+                servers += NativeServer(this)
+            } catch (e: IOException) {
+                System.err.println("Error while loading native library: ${e.message}")
+            }
     }
 
 

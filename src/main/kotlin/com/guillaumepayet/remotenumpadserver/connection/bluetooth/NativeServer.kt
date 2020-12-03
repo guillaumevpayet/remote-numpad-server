@@ -19,6 +19,7 @@
 package com.guillaumepayet.remotenumpadserver.connection.bluetooth
 
 import com.guillaumepayet.remotenumpadserver.connection.ConnectionStatus
+import org.scijava.nativelib.NativeLibraryUtil
 import org.scijava.nativelib.NativeLoader
 import java.io.FileOutputStream
 import java.io.FileNotFoundException
@@ -38,30 +39,7 @@ class NativeServer(private val connectionInterface: BluetoothConnectionInterface
      */
     companion object {
 
-        /**
-         * The path to the service dictionary
-         */
-        private var serviceDictionary = ""
-
-        init {
-            val tmpdir = System.getProperty("java.library.path").split(':')[0]
-            System.setProperty("java.library.tmpdir", tmpdir)
-            NativeLoader.loadLibrary("NativeServer")
-
-            val os = System.getProperty("os.name").toLowerCase()
-
-            // The MacOS library has an extra dependency, this extracts it
-			if (os.startsWith("mac")) {
-				val insidePath = "/ServiceDictionary.plist"
-				val outsidePath = tmpdir + insidePath
-
-				try {
-					extractResource(insidePath, outsidePath)
-				} catch (e: IOException) {
-					System.err.println("Unable to extract the Bluetooth service dictionary.")
-				}
-			}
-        }
+        private const val LIBRARY_NAME = "NativeServer"
 
         /**
          * Extract a file from the JAR.
@@ -74,6 +52,7 @@ class NativeServer(private val connectionInterface: BluetoothConnectionInterface
 
             if (to != null) {
                 file = File(to)
+                file.parentFile.mkdirs()
                 file.createNewFile()
             } else {
                 file = File.createTempFile(prefix, suffix)
@@ -91,14 +70,35 @@ class NativeServer(private val connectionInterface: BluetoothConnectionInterface
                 FileOutputStream(file).use { outputStream -> outputStream.write(buffer) }
             }
 
-            serviceDictionary = file.path
             return file
         }
     }
 
 
     init {
-        setProperty("service_dictionary", serviceDictionary)
+        val tmpdir = System.getProperty("java.library.path").split(':')[0]
+        System.setProperty("java.library.tmpdir", tmpdir)
+        val libraryName = NativeLibraryUtil.getPlatformLibraryName(LIBRARY_NAME)
+        val outsideLib = extractResource("/$libraryName", "$tmpdir/$libraryName")
+
+        if (!outsideLib.exists())
+            throw IOException("Unable to extract native library.")
+
+        NativeLoader.loadLibrary(LIBRARY_NAME)
+
+        val os = System.getProperty("os.name").toLowerCase()
+
+        // The MacOS library has an extra dependency, this extracts it
+        if (os.startsWith("mac")) {
+            val insidePath = "/ServiceDictionary.plist"
+            val outsidePath = tmpdir + insidePath
+            val outsideFile = extractResource(insidePath, outsidePath)
+
+            if (!outsideFile.exists())
+                throw IOException("Unable to extract the Bluetooth service dictionary.")
+
+            setProperty("service_dictionary", outsideFile.path)
+        }
     }
 
 

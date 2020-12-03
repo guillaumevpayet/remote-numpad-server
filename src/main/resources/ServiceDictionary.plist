@@ -24,7 +24,7 @@
 	<integer>65540</integer>
 	<key>0001 - ServiceClassIDList</key>
 	<array>
-		<data/>
+		<data></data>
 	</array>
 	<key>0004 - ProtocolDescriptorList</key>
 	<array>
@@ -77,7 +77,7 @@
 	<key>0009 - BluetoothProfileDescriptorList</key>
 	<array>
 		<array>
-			<data/>
+			<data></data>
 			<dict>
 				<key>DataElementSize</key>
 				<integer>2</integer>
