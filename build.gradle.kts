@@ -16,8 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    kotlin("jvm") version "1.4.10"
+    kotlin("jvm") version "1.4.32"
     id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
@@ -29,11 +31,17 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.4.1")
+
+    // for Windows
     implementation("io.ultreia:bluecove:2.1.1")
-//    implementation("com.github.hypfvieh:dbus-java:3.2.3")
-    implementation("org.scijava:native-lib-loader:2.3.4")
+
+    // for MacOS
+    implementation("org.scijava:native-lib-loader:2.3.5")
+
+    // for Linux
+//    implementation("com.github.hypfvieh:bluez-dbus:0.1.4")
+//    implementation("com.github.hypfvieh:dbus-java:3.3.0")
 }
 
 tasks.shadowJar {
@@ -42,4 +50,8 @@ tasks.shadowJar {
     manifest {
         attributes["Main-Class"] = "com.guillaumepayet.remotenumpadserver.MainKt"
     }
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.useIR = true
 }
