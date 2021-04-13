@@ -63,7 +63,7 @@ class NativeServer(private val connectionInterface: BluetoothConnectionInterface
 
             file.deleteOnExit()
 
-            NativeServer::class.java.getResourceAsStream(path).use { inputStream ->
+            NativeServer::class.java.getResourceAsStream(path)?.use { inputStream ->
                 val buffer = ByteArray(inputStream.available())
                 inputStream.read(buffer)
 
