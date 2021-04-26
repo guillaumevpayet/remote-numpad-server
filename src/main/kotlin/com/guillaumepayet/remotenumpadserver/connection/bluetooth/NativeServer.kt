@@ -84,7 +84,13 @@ class NativeServer(private val connectionInterface: BluetoothConnectionInterface
         if (!outsideLib.exists())
             throw IOException("Unable to extract native library.")
 
-        NativeLoader.loadLibrary(LIBRARY_NAME)
+        try {
+            NativeLoader.loadLibrary(LIBRARY_NAME)
+        } catch (e: IOException) {
+            val cause = e.cause!!
+            System.err.println("Error ${cause.javaClass}: ${cause.message}")
+            throw e
+        }
 
         val os = System.getProperty("os.name").toLowerCase()
 
@@ -125,6 +131,7 @@ class NativeServer(private val connectionInterface: BluetoothConnectionInterface
      * Notify the connection interface when data is received.
      */
     private fun stringReceived(string: String) {
-        connectionInterface.onStringReception(string)
+        println("stringReceived('$string')")
+//        connectionInterface.onStringReception(string)
     }
 }

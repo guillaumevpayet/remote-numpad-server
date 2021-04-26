@@ -17,6 +17,7 @@
  */
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     kotlin("jvm") version "1.4.32"
@@ -44,14 +45,12 @@ dependencies {
 //    implementation("com.github.hypfvieh:dbus-java:3.3.0")
 }
 
-tasks.shadowJar {
-    exclude("DebugProbesKt.bin")
-
-    manifest {
-        attributes["Main-Class"] = "com.guillaumepayet.remotenumpadserver.MainKt"
-    }
-}
+project.setProperty("mainClassName", "com.guillaumepayet.remotenumpadserver.MainKt")
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.useIR = true
+}
+
+tasks.withType<ShadowJar> {
+    exclude("DebugProbesKt.bin")
 }
