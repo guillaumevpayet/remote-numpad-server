@@ -31,7 +31,6 @@ import java.io.IOException
  *
  * @constructor Save the path to the service dictionary into a property
  */
-@Suppress("unused")
 class NativeServer(private val connectionInterface: BluetoothConnectionInterface) : IBluetoothServer {
 
     /**
@@ -91,32 +90,12 @@ class NativeServer(private val connectionInterface: BluetoothConnectionInterface
             System.err.println("Error ${cause.javaClass}: ${cause.message}")
             throw e
         }
-
-        val os = System.getProperty("os.name").toLowerCase()
-
-        // The MacOS library has an extra dependency, this extracts it
-        if (os.startsWith("mac")) {
-            val insidePath = "/ServiceDictionary.plist"
-            val outsidePath = tmpdir + insidePath
-            val outsideFile = extractResource(insidePath, outsidePath)
-
-            if (!outsideFile.exists())
-                throw IOException("Unable to extract the Bluetooth service dictionary.")
-
-            setProperty("service_dictionary", outsideFile.path)
-        }
     }
 
 
     external override fun open(uuid: String): Boolean
 
     external override fun close()
-
-
-    /**
-     * Set a property in the native implementation.
-     */
-    private external fun setProperty(key: String, value: String)
 
 
     /**

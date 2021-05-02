@@ -45,12 +45,14 @@ dependencies {
 //    implementation("com.github.hypfvieh:dbus-java:3.3.0")
 }
 
-project.setProperty("mainClassName", "com.guillaumepayet.remotenumpadserver.MainKt")
-
 tasks.withType<KotlinCompile> {
     kotlinOptions.useIR = true
 }
 
 tasks.withType<ShadowJar> {
     exclude("DebugProbesKt.bin")
+
+    manifest {
+        attributes["Main-Class"] = "com.guillaumepayet.remotenumpadserver.MainKt"
+    }
 }
